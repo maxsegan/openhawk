@@ -1,0 +1,46 @@
+[project]
+name = "openhawk"
+version = "2026.9.29"
+description = "Automatic 3D tennis ball flights, events and player positions from broadcast video."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "polars",
+    "pandas",
+    "scikit-learn",
+    "scipy",
+    "tqdm",
+    "torch",
+    "torchvision",
+    "matplotlib",
+    "pillow",
+]
+
+[project.optional-dependencies]
+cv = [
+    "easydict",
+    "einops",
+    "opencv-python",
+    "timm",
+    "ultralytics",   # YOLO player/pose models (AGPL-3.0)
+]
+dev = ["pytest", "ruff"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+norecursedirs = [".git", ".venv", "data"]
+
+# Research layout: run from the repository root (python -m cv.pipeline.product_runner ...).
+# Installing only pulls in the dependencies; no package is built.
+[tool.setuptools]
+packages = []
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"

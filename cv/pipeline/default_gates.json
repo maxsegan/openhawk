@@ -1,0 +1,48 @@
+{
+  "gates": {
+    "maximum_point_abstention_fraction": 0.5,
+    "tracking_failure_thresholds": {
+      "minimum_track_coverage_rate": 0.6,
+      "maximum_track_gap_seconds": 0.6,
+      "maximum_track_fragments_per_second": 1.5,
+      "minimum_candidate_support_rate": 0.94,
+      "maximum_nonballistic_window_rate": 0.45
+    },
+    "point_quality_risk_weights": {
+      "candidate_support_rate": -2.0,
+      "crop_branch_frame_rate": 0.5,
+      "nonballistic_window_rate": 1.0,
+      "track_coverage_rate": -2.0,
+      "track_fragments": 1.0
+    },
+    "point_quality_risk_profile": "raw_fragment_count",
+    "point_quality_risk_profiles": {
+      "raw_fragment_count": {
+        "candidate_support_rate": -2.0,
+        "crop_branch_frame_rate": 0.5,
+        "nonballistic_window_rate": 1.0,
+        "track_coverage_rate": -2.0,
+        "track_fragments": 1.0
+      },
+      "fragment_rate_plus_gap": {
+        "candidate_support_rate": -2.0,
+        "crop_branch_frame_rate": 0.5,
+        "maximum_track_gap_seconds": 1.0,
+        "nonballistic_window_rate": 1.0,
+        "track_coverage_rate": -2.0,
+        "track_fragments_per_second": 1.0
+      }
+    },
+    "report_event_frame_temporal_radii": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "report_every_point_and_full_denominator": true,
+    "retained_event_anchor_catastrophic_errors": 0,
+    "retained_point_catastrophic_identity_errors": 0,
+    "tracking_decision_mode": "absolute_calibrated_v1"
+  },
+  "schema": "pipeline_gate_configuration_v1"
+}

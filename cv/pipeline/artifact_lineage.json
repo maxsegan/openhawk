@@ -1,0 +1,34 @@
+{
+  "schema": "canonical_artifact_lineage_v1",
+  "artifacts": {
+    "normalized_point_reel": {"producer": "point_ledger", "consumed_by": ["evidence_substrate"]},
+    "point_map": {"producer": "point_ledger", "consumed_by": ["evidence_substrate", "court_camera"]},
+    "native_frames": {"producer": "evidence_substrate", "consumed_by": ["court_camera", "tracking_composition"]},
+    "frame_cadence": {"producer": "evidence_substrate", "consumed_by": ["point_validity_gate", "event_interpretation", "physical_player_motion"]},
+    "player_boxes": {"producer": "evidence_substrate", "consumed_by": ["court_camera", "tracking_composition"]},
+    "audio_evidence": {"producer": "evidence_substrate", "consumed_by": ["frozen_event_baselines"]},
+    "court_homography": {"producer": "court_camera", "consumed_by": ["player_side", "camera_projection", "point_validity_gate", "event_features"]},
+    "camera_projection": {"producer": "court_camera", "consumed_by": ["camera_metric_refine", "reconstruction_3d"]},
+    "metric_camera_projection": {"producer": "camera_metric_refine", "consumed_by": ["physical_player_motion", "reconstruction_3d"]},
+    "sided_player_boxes": {"producer": "player_side", "consumed_by": ["physical_player_motion", "reconstruction_3d"]},
+    "player_pose_2d": {"producer": "pose_player_crop", "consumed_by": ["camera_metric_refine", "physical_player_motion", "reconstruction_3d"]},
+    "player_body_dimensions": {"producer": "camera_metric_refine", "consumed_by": ["physical_player_motion"]},
+    "player_body_prior": {"producer": "explicit_automatic_temporal_body_model", "consumed_by": ["physical_player_motion"]},
+    "physical_player_motion": {"producer": "physical_player_motion", "consumed_by": ["reconstruction_3d", "portal"]},
+    "composed_ball_track": {"producer": "tracking_composition", "consumed_by": ["point_validity_gate", "event_features", "reconstruction_3d"]},
+    "event_features": {"producer": "event_features", "consumed_by": ["typed_event_emissions", "typed_event_hypotheses"]},
+    "frozen_event_model": {"producer": "offline_model_training", "consumed_by": ["typed_event_emissions", "typed_event_hypotheses"]},
+    "typed_event_emissions": {"producer": "typed_event_emissions", "consumed_by": ["reconstruction_3d"]},
+    "typed_event_hypotheses": {"producer": "typed_event_emissions", "consumed_by": ["reconstruction_3d"]},
+    "reconstruction_3d": {"producer": "reconstruction_3d", "consumed_by": ["flight_ledger", "portal"]}
+  },
+  "noncanonical_outputs": {
+    "legacy_single_wasb_track": "generated only by --legacy-contacts",
+    "legacy_contacts_csv": "generated only by --legacy-contacts",
+    "ball_track_ownership": "generated only by --primary-ball-ownership",
+    "ball_track_pre_anchor_extension": "generated only by --anchor-extension",
+    "ball_anchor_extension_side_tables": "generated only by --anchor-extension",
+    "track_arcs_review_bundle": "explicit frozen-baseline command only",
+    "ball_events_review_csv": "explicit frozen-baseline command only"
+  }
+}

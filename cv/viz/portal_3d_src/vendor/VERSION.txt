@@ -1,0 +1,1 @@
+three.js r160 (0.160.0) — MIT License. Vendored 2026-07-21 for offline portal use (no CDN).

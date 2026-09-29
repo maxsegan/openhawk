@@ -1,0 +1,44 @@
+OpenHawk
+Copyright 2026 Max Segan
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+-------------------------------------------------------------------------------
+Third-party code included in this repository
+-------------------------------------------------------------------------------
+
+cv/viz/portal_3d_src/vendor/three.module.js
+cv/viz/portal_3d_src/vendor/OrbitControls.js
+    three.js r160, Copyright (c) 2010-2023 three.js authors.
+    MIT License; full text in cv/viz/portal_3d_src/vendor/THREE_LICENSE.txt.
+
+No other third-party source code is vendored. cv/pipeline/event_cascade_frozen/ holds frozen
+copies of the authors' own modules.
+
+-------------------------------------------------------------------------------
+Runtime dependencies (installed separately; not distributed here)
+-------------------------------------------------------------------------------
+
+WASB-SBDT (NTT Communications), S4 ball detector source and tennis weights ...... MIT
+TrackNetV2 tennis weights (distributed with WASB-SBDT) ......................... see WASB-SBDT
+Ultralytics (ultralytics package; YOLOv8m and YOLO26m-pose weights), S3 players . AGPL-3.0
+    (commercial licence available from Ultralytics). The Ultralytics package and
+    weights are used under their own terms; they are not part of this repository.
+PyTorch, torchvision (incl. Kinetics-400 / ImageNet initialisations) ........... BSD-3-Clause
+    (pretrained weights: see their model terms)
+NumPy, SciPy, pandas, polars, scikit-learn, OpenCV, timm, einops, matplotlib,
+Pillow, tqdm, easydict ........................................ BSD / Apache-2.0 / MIT family
+vLLM (optional local scoreboard / event VLM serving) ............................ Apache-2.0
+Qwen model weights (optional local VLM) ................................ see the model card
+FFmpeg / ffprobe (decoding and timestamp audit) ................ LGPL/GPL depending on build
+
+-------------------------------------------------------------------------------
+Data
+-------------------------------------------------------------------------------
+
+physics/bounce_law_hawkeye_holdout.json and physics/bounce_reference.py contain coefficients
+fitted to the public Hawk-Eye CourtVision trajectory data (Roland Garros 2019-2021, Australian
+Open 2020-2021). That data is not redistributed here. Player heights in
+cv/pipeline/player_biometrics.json are public ATP/WTA profile values listed with their URLs.
+The images in docs/samples/ are single reduced frames from one broadcast, included only to
+illustrate the tool's output.

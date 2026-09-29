@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "OpenHawk: Physics-Based 3D Tennis Tracking from Broadcast Video"
+type: software
+authors:
+  - family-names: Segan
+    given-names: Max
+license: Apache-2.0
+repository-code: "https://github.com/maxsegan/openhawk"
+version: "2026-09-29"
+date-released: "2026-09-29"
+abstract: >-
+  Automatic reconstruction of 3D tennis ball flights, events and player positions from single
+  broadcast videos: court and camera calibration, 2D ball tracking, event detection, and a
+  whole-point physical fit with a 3D flight model and a court bounce law re-measured on
+  Hawk-Eye data.
+keywords:
+  - tennis
+  - computer vision
+  - ball tracking
+  - 3D reconstruction
+  - sports physics

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>3D Point Reconstruction — tennis pipeline</title>
+<style>
+  :root {
+    --bg: #0f1115; --panel: #161a20; --panel2: #1d222b; --edge: #2a313c;
+    --text: #e7eaee; --muted: #9aa2ad; --accent: #59c3ff;
+    --near: #6f63e6; --far: #1fb98a; --warn: #e0a23f; --ok: #3fb27f; --bad: #e0503f;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+    font: 13px/1.5 -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+  #app { display: grid;
+    grid-template-columns: minmax(340px, 1.22fr) minmax(300px, 0.92fr) minmax(280px, 0.78fr);
+    grid-template-rows: 100vh; }
+  #monitors { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: #000; }
+  @media (max-width: 1100px) {
+    #app { grid-template-columns: 1fr; grid-template-rows: 36vh 22vh minmax(320px, auto); height: auto; }
+    #side { max-height: none; }
+  }
+
+  /* left: 3D stage */
+  #left { position: relative; display: flex; flex-direction: column; min-width: 0; }
+  #stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+  #render-status { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 5; padding: 12px; background: #302916; color: #ffdc86; border: 1px solid #776124; border-radius: 6px; }
+  #scene { width: 100%; height: 100%; display: block; }
+  body.review-context #scene { opacity: 0.48; }
+  #shot-context { display: none; position: absolute; z-index: 12; top: 10px; left: 50%;
+    transform: translateX(-50%); padding: 5px 10px; border-radius: 999px;
+    background: rgba(15,17,21,.88); border: 1px solid var(--ok); color: #b9f5d8;
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; }
+  body.review #shot-context { display: block; }
+  body.review-context #shot-context { border-color: var(--warn); color: #ffd798; }
+  #labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .label { position: absolute; transform: translate(-50%, -50%); white-space: nowrap;
+    font-size: 11px; padding: 1px 5px; border-radius: 4px; background: rgba(15,17,21,0.72);
+    color: var(--text); border: 1px solid var(--edge); }
+  .lab-apex { color: #ffd23f; border-color: #6b5a15; }
+  .lab-net { color: var(--accent); border-color: #1c4a66; }
+  .lab-net.below { color: var(--bad); border-color: #6b241c; }
+  .lab-contact { font-weight: 600; }
+  .lab-contact.serve { color: #ffd23f; }
+  .lab-contact.rally { color: #ff8f8d; }
+  .lab-contact.dead { color: var(--muted); font-weight: 400; }
+  .lab-out { color: var(--bad); font-weight: 600; }
+  .lab-reach { color: var(--accent); opacity: 0.8; }
+  .lab-player { font-weight: 700; padding: 2px 7px; }
+  .lab-player.near { color: #b9b2ff; border-color: #3a327e; }
+  .lab-player.far { color: #8ff0d3; border-color: #17604a; }
+  .lab-player.no-pose { color: #e8cf87; border-color: #67582d; background: #2b271c; }
+
+  /* controls bar */
+  #controls { background: var(--panel); border-top: 1px solid var(--edge);
+    padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+  #controls .grp { display: flex; align-items: center; gap: 6px; }
+  #controls label { color: var(--muted); }
+  button, select, input[type=range] { font: inherit; }
+  button { background: var(--panel2); color: var(--text); border: 1px solid var(--edge);
+    border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button:disabled { opacity: 0.45; cursor: default; }
+  button:disabled:hover { border-color: var(--edge); }
+  /* "Follow" toggle lights up while follow (progressive-reveal) mode is active */
+  #follow.armed { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  select { background: var(--panel2); color: var(--text); border: 1px solid var(--edge);
+    border-radius: 6px; padding: 3px 6px; }
+  .scrub-stack { position: relative; width: min(420px, 48vw); padding-bottom: 13px; }
+  #scrub { width: 100%; accent-color: var(--accent); margin: 0; }
+  #timeline-ticks { position: absolute; left: 7px; right: 7px; bottom: 1px; height: 10px;
+    pointer-events: none; }
+  .timeline-tick { position: absolute; width: 2px; height: 8px; transform: translateX(-1px);
+    border-radius: 1px; }
+  .timeline-tick.label.contact { background: #59c3ff; height: 10px; }
+  .timeline-tick.label.bounce { background: #1fb98a; height: 7px; }
+  .timeline-tick.fit.contact { background: #ffd23f; height: 5px; bottom: 0; }
+  .toggles { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+  .toggles label { color: var(--text); display: inline-flex; align-items: center; gap: 4px; }
+  #clock { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* right: side panel */
+  #side { background: var(--panel); border-left: 1px solid var(--edge);
+    overflow-y: auto; padding: 12px; }
+  #side h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); margin: 16px 0 6px; }
+  #side h2:first-child { margin-top: 0; }
+  .cross-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    margin-bottom: 10px; color: var(--muted); font-size: 11px; }
+  .cross-nav a { color: var(--accent); text-decoration: none; }
+  #picker { width: 100%; }
+  .row { margin: 2px 0; }
+  .muted { color: var(--muted); }
+  .caveat { color: var(--warn); font-size: 11px; margin-top: 6px; }
+  .ok { color: var(--ok); } .warn { color: var(--warn); }
+  #meta { background: var(--panel2); border: 1px solid var(--edge); border-radius: 8px; padding: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { text-align: left; padding: 3px 4px; border-bottom: 1px solid var(--edge); }
+  th { color: var(--muted); font-weight: 600; }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover { background: var(--panel2); }
+  tr.ct-serve td:nth-child(3) { color: #ffd23f; }
+  tr.ct-rally td:nth-child(3) { color: #ff8f8d; }
+  tr.ct-dead td { color: var(--muted); }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11px; }
+  .legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  #err { display: none; position: absolute; top: 10px; left: 10px; right: 10px; z-index: 20;
+    background: #3a1414; border: 1px solid #6b241c; color: #ffd7d0; padding: 10px 12px; border-radius: 8px; }
+  #ramp { height: 8px; border-radius: 4px; margin: 4px 0;
+    background: linear-gradient(90deg, #31123b, #454fca, #1aa6db, #38d170, #dbdb33, #e6591f, #ae1217); }
+  .hint { color: var(--muted); font-size: 11px; }
+  #review-panel { display: none; margin: 0 0 12px; padding: 10px; border: 1px solid var(--edge);
+    border-radius: 8px; background: var(--panel2); }
+  body.review #review-panel { display: block; }
+  #review-panel .choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin: 7px 0; }
+  #review-panel button.active { border-color: var(--accent); color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent) inset; }
+  #review-panel .reasons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px 8px;
+    margin: 7px 0; font-size: 11px; }
+  #review-panel textarea { width: 100%; min-height: 58px; resize: vertical; background: var(--bg);
+    color: var(--text); border: 1px solid var(--edge); border-radius: 6px; padding: 6px; }
+  #review-panel .review-actions { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+
+  /* reference-monitor video panel (right column, above the point picker) */
+  #video, #overlay-video { margin: 0; border: 0; border-bottom: 1px solid var(--edge);
+    overflow: hidden; background: #000; position: relative; z-index: 5;
+    display: flex; flex-direction: column; min-height: 0; }
+  #video { flex: 1.65; }
+  #overlay-video { flex: 1; }
+  #video.hidden, #overlay-video.hidden { display: none; }
+  #video .vhead, #overlay-video .vhead { display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; padding: 5px 8px; background: var(--panel2); border-bottom: 1px solid var(--edge); }
+  #video .vhead b, #overlay-video .vhead b { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  #video .vframe-wrap, #overlay-video .vframe-wrap { position: relative; width: 100%; flex: 1; min-height: 0; background: #000; }
+  #video .vframe-wrap img, #overlay-video .vframe-wrap img { position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: contain; display: block; opacity: 0; }
+  #video .vframe-wrap img.show, #overlay-video .vframe-wrap img.show { opacity: 1; }
+  #ovcap { position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 7px;
+    font-size: 10px; font-variant-numeric: tabular-nums; color: #dfe3e8;
+    background: linear-gradient(0deg, rgba(0,0,0,0.72), rgba(0,0,0,0)); }
+  #ovnote { display: none; padding: 14px 12px; font-size: 11px; color: var(--muted);
+    text-align: center; background: var(--panel2); }
+  #video-overlay { position: absolute; inset: 0; width: 100%; height: 100%;
+    pointer-events: none; overflow: visible; z-index: 2; }
+  #ovcap, #video-ball-legend, #vcap { z-index: 3; }
+  #video-overlay .labeled { fill: #59c3ff; stroke: #07131d; stroke-width: 3; }
+  #video-overlay .fitted { fill: #ffd23f; stroke: #211a00; stroke-width: 3; }
+  #video-overlay .fit-cross { display: none; }
+  #video-overlay .pose-limb { stroke: #ff7ac2; stroke-width: 4; fill: none; }
+  #video-overlay .pose-joint { fill: #ffb2dc; stroke: #32152a; stroke-width: 2; }
+  #video-ball-legend { position: absolute; top: 5px; left: 7px; display: none;
+    padding: 2px 5px; border-radius: 4px; color: #eef2f6; font-size: 10px;
+    background: rgba(0,0,0,.68); }
+  #video-ball-legend.show { display: block; }
+  #video-ball-legend .front { color: #59c3ff; }
+  #video-ball-legend .fit { color: #ffd23f; }
+  /* Native pre/post pictures retain full brightness for toss and ending inspection. */
+  #vcap { position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 7px;
+    font-size: 10px; font-variant-numeric: tabular-nums; color: #dfe3e8;
+    background: linear-gradient(0deg, rgba(0,0,0,0.72), rgba(0,0,0,0)); }
+  #vnote { display: none; padding: 14px 12px; font-size: 11px; color: var(--muted);
+    text-align: center; background: var(--panel2); }
+  #video.no-frames #vframe, #video.no-frames #vframeB, #video.no-frames #vcap,
+  #overlay-video.no-frames .vframe-wrap, #overlay-video.no-frames #ovcap { display: none; }
+  #video.no-frames #vnote, #overlay-video.no-frames #ovnote { display: block; }
+  /* Strokes are screen pixels. A 1920 viewBox otherwise shrinks a 2px line to a fraction of a pixel. */
+  #overlay-video .court-ok,
+  #overlay-video .court-held,
+  #overlay-video .ball-auto,
+  #overlay-video .ball-label,
+  #overlay-video .player-near,
+  #overlay-video .player-far,
+  #overlay-video .skel,
+  #overlay-video .fit-ok,
+  #overlay-video .fit-reject,
+  #overlay-video .event-mark,
+  #video-overlay .pose-limb {
+    vector-effect: non-scaling-stroke;
+    stroke-width: 3px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  #overlay-video .court-ok { stroke: #39ff5a; fill: none; filter: drop-shadow(0 0 1px #041408); }
+  #overlay-video .court-held { stroke: #ff5a5a; fill: none; filter: drop-shadow(0 0 1px #140404); }
+  #overlay-video .ball-auto { fill: rgba(0, 210, 255, 0.55); stroke: #e8fbff; }
+  #overlay-video .ball-label { fill: none; stroke: #ff4adf; stroke-width: 3px; }
+  #overlay-video .player-near { stroke: #7dff9a; fill: none; }
+  #overlay-video .player-far { stroke: #ffbf4a; fill: none; }
+  #overlay-video .skel { stroke: #ffe14a; fill: #ffe14a; stroke-width: 4px; }
+  #overlay-video .fit-ok { stroke: #ffffff; fill: rgba(255, 255, 255, 0.28); }
+  #overlay-video .fit-reject { stroke: #ff8c00; fill: rgba(255, 140, 0, 0.28); }
+  #overlay-video .event-mark { fill: none; stroke-width: 3px; }
+  #navigator { margin: 0 0 12px; padding: 10px; border: 1px solid var(--edge);
+    border-radius: 8px; background: var(--panel2); }
+  #navigator h2 { margin-top: 0; }
+  #nav-crumb { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; font-size: 12px; }
+  #nav-crumb button { padding: 2px 8px; }
+  #navigator label { display: flex; flex-direction: column; gap: 2px; color: var(--muted);
+    font-size: 11px; margin: 6px 0; }
+  #navigator label[hidden], #nav-arms[hidden], #nav-flights[hidden], #nav-move[hidden] { display: none; }
+  #navigator select, #navigator input[type=search] { width: 100%; }
+  #nav-arms, #nav-move { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  #nav-arms button .chip { display: inline-block; margin-left: 4px; padding: 0 4px; border-radius: 999px;
+    font-size: 10px; }
+  #nav-arms button .chip.matched { color: #b9f5d8; }
+  #nav-arms button .chip.missed { color: #ffb4a8; }
+  #nav-arms button .chip.extra { color: #ffe08a; }
+  #nav-flights { margin-top: 6px; max-height: 160px; overflow: auto; }
+  #nav-flights button { display: block; width: 100%; text-align: left; margin: 2px 0; }
+  #landing { display: none; position: absolute; z-index: 6; left: 16px; right: 16px; top: 16px;
+    padding: 12px 14px; border-radius: 8px; background: rgba(15,17,21,.92);
+    border: 1px solid var(--accent); color: var(--text); }
+  body.landing #landing { display: block; }
+  #flight-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; margin-bottom: 8px; }
+  #flight-filters label { color: var(--muted); font-size: 11px; display: flex; flex-direction: column; gap: 2px; }
+  #flight-filters select { width: 100%; }
+  #flight-events button, #flight-checks .check { display: block; width: 100%; text-align: left;
+    margin: 2px 0; background: transparent; }
+  #flight-events button.active { border-color: var(--accent); color: var(--accent); }
+  #flight-readout { margin-bottom: 10px; }
+  #video.expanded { position: fixed; inset: 24px; z-index: 100; margin: 0;
+    display: flex; flex-direction: column; box-shadow: 0 18px 70px rgba(0,0,0,.75); }
+  #video.expanded .vframe-wrap { flex: 1; min-height: 0; }
+  #video-expand { padding: 2px 8px; font-size: 10px; }
+  #serve-pose-audit { display: none; margin: -4px 0 12px; padding: 7px;
+    border: 1px solid var(--edge); border-radius: 8px; background: var(--panel2); }
+  #serve-pose-audit.show { display: block; }
+  #serve-pose-audit svg { width: 100%; height: 180px; display: block; background: #10141a; }
+  #serve-pose-audit .ground { stroke: #78828e; stroke-width: 1; }
+  #serve-pose-audit .vertical { stroke: #45505d; stroke-width: 1; stroke-dasharray: 4 4; }
+  #serve-pose-audit .pose-limb { stroke: #ff7ac2; stroke-width: 3; fill: none; }
+  #serve-pose-audit .pose-joint { fill: #ffb2dc; }
+  #serve-pose-caption { color: var(--muted); font-size: 10px; margin-top: 4px; }
+
+  /* unmissable diagnostic banner for rejected fits */
+  #diagbanner { display: none; margin: 0 0 12px; padding: 10px 12px; border-radius: 8px;
+    background: #3a1414; border: 1px solid #a8352a; color: #ffd7d0; font-size: 12px; }
+  #diagbanner.show { display: block; }
+  #diagbanner b { color: #ff8a7a; letter-spacing: 0.04em; }
+  #diagbanner .sub { color: #f0b6ad; margin-top: 3px; }
+  #pose-note { display: none; margin: 0 0 12px; padding: 7px 10px; border-radius: 6px;
+    background: #2b271c; border: 1px solid #67582d; color: #e8cf87; font-size: 11px; }
+  #pose-note.show { display: block; }
+  .family-summary { margin-top: 8px; padding-top: 7px; border-top: 1px solid var(--edge); }
+  .family-members { display: flex; flex-wrap: wrap; gap: 4px 8px; margin-top: 4px; }
+  .family-member { font-size: 11px; }
+  .family-member::before { content: ""; display: inline-block; width: 15px;
+    margin-right: 4px; vertical-align: middle; border-top: 2px dashed currentColor; }
+  .family-member.selected::before { border-top-style: solid; }
+
+  /* embedded mode (inside the compare 2D+3D view): the parent supplies the shared
+     transport and the 2D reference view, so this pane is the 3D stage only. */
+  body.embed #app { grid-template-columns: 1fr; }
+  body.embed #monitors, body.embed #side, body.embed #controls { display: none !important; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.js" } }
+</script>
+</head>
+<body>
+<div id="app">
+  <div id="monitors">
+    <div id="video">
+      <div class="vhead"><b>clean video</b>
+        <span><span id="vcam" class="muted"></span> <button id="video-expand">expand</button></span></div>
+      <div class="vframe-wrap">
+        <img id="vframe" alt="clean broadcast frame" decoding="async" />
+        <img id="vframeB" alt="" decoding="async" />
+        <div id="vcap"></div>
+      </div>
+      <div id="vnote">broadcast frames not available for this clip.</div>
+    </div>
+    <div id="overlay-video">
+      <div class="vhead"><b>overlay</b>
+        <span id="ovcam" class="muted">court · ball · players · fit · events</span></div>
+      <div class="vframe-wrap">
+        <img id="ovframe" alt="overlay broadcast frame" decoding="async" />
+        <img id="ovframeB" alt="" decoding="async" />
+        <svg id="video-overlay" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet"
+          aria-label="court, balls, players, fit, and events">
+          <g id="ov-court"></g>
+          <g id="ov-fit"></g>
+          <g id="ov-players"></g>
+          <g id="ov-events"></g>
+          <circle id="vlabel" class="labeled" cx="0" cy="0" r="9" visibility="hidden" />
+          <circle id="vfit" class="fitted" cx="0" cy="0" r="7" visibility="hidden" />
+          <path id="vfit-cross" class="fit-cross" d="" visibility="hidden" />
+          <g id="vpose"></g>
+        </svg>
+        <div id="video-ball-legend"><span class="front">● labeled click</span> ·
+          <span class="fit">● fitted reprojection</span></div>
+        <div id="ovcap"></div>
+      </div>
+      <div id="ovnote">broadcast frames not available for this clip.</div>
+    </div>
+  </div>
+  <div id="left">
+    <div id="stage">
+      <canvas id="scene"></canvas>
+      <div id="render-status" role="status" hidden></div>
+      <div id="labels"></div>
+      <div id="shot-context">SCORED SHOT</div>
+      <div id="err"></div>
+      <div id="landing">Choose an audit set, then a match, a point, and an arm. Court lines, boxes, the ball, the fit, and review skeletons are on the smaller video.</div>
+    </div>
+    <div id="controls">
+      <div class="grp">
+        <button id="play" title="play / pause">▶</button>
+        <button id="step-back" title="previous native frame (Left Arrow)">←</button>
+        <div class="scrub-stack">
+          <input type="range" id="scrub" min="0" max="1000" value="0" />
+          <div id="timeline-ticks" aria-label="blue label contacts, green label bounces, yellow fitted contacts"></div>
+        </div>
+        <button id="step-forward" title="next native frame (Right Arrow)">→</button>
+        <span id="clock">t = 0.00 s</span>
+      </div>
+      <div class="grp">
+        <label>speed</label>
+        <select id="speed">
+          <option value="0.25">0.25×</option>
+          <option value="0.5">0.5×</option>
+          <option value="1" selected>1×</option>
+          <option value="2">2×</option>
+        </select>
+      </div>
+      <div class="grp">
+        <label>colour</label>
+        <select id="metric">
+          <option value="speed" selected>speed</option>
+          <option value="height">height</option>
+          <option value="spin">spin mag</option>
+        </select>
+      </div>
+      <div class="grp toggles">
+        <label><input type="checkbox" id="ov-apex" checked /> apex</label>
+        <label><input type="checkbox" id="ov-netclear" checked /> net clr</label>
+        <label><input type="checkbox" id="ov-reach" /> reach band</label>
+        <label><input type="checkbox" id="ov-spin" checked /> spin</label>
+        <label><input type="checkbox" id="ov-players" checked /> players</label>
+        <label><input type="checkbox" id="ov-family" checked /> depth family</label>
+        <label title="show the apex-height / net-clearance / speed text chips (off by default — they clutter a long rally)"><input type="checkbox" id="ov-labels" /> labels</label>
+        <label title="show low-trust dashed geometry: missing-span bridges and rejected-fit centrelines"><input type="checkbox" id="ov-suppressed" /> suppressed</label>
+        <label><input type="checkbox" id="ov-video" checked /> video</label>
+        <label><input type="checkbox" id="fl-court" checked /> court</label>
+        <label><input type="checkbox" id="fl-auto" checked /> auto ball</label>
+        <label><input type="checkbox" id="fl-labelled" checked /> labelled ball</label>
+        <label><input type="checkbox" id="fl-boxes" checked /> boxes</label>
+        <label><input type="checkbox" id="fl-skeleton" checked /> skeleton</label>
+        <label><input type="checkbox" id="fl-fit" checked /> fit</label>
+        <label><input type="checkbox" id="fl-rejected" checked /> rejected</label>
+        <label><input type="checkbox" id="fl-events" checked /> events</label>
+      </div>
+      <div class="grp">
+        <button id="follow" title="Follow mode — reveal the point up to the scrubber, ghost older shots, hide future ones. Click to show the whole point at once.">Follow: on</button>
+        <button id="reset-cam">reset view</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="side">
+    <div class="cross-nav"><b>Canonical 3D viewer</b>
+      <a href="/portal/failures/">Failure review</a>
+      <a id="review-link" href="http://localhost:5031/">Open per-point review ↗</a>
+    </div>
+    <div id="navigator">
+      <h2>Open a review</h2>
+      <div id="nav-crumb" aria-label="Breadcrumb"></div>
+      <label>Search
+        <input id="nav-search" type="search" placeholder="player, tournament, attempt, cause" />
+      </label>
+      <label>Audit set
+        <select id="nav-set">
+          <option value="">Choose…</option>
+          <option value="fresh">Fresh panels 0 and A</option>
+          <option value="development">Development</option>
+          <option value="panel_c">Panel C</option>
+          <option value="error_themes">Error-theme audits</option>
+          <option value="all">All flight reviews</option>
+          <option value="points">Existing points</option>
+        </select>
+      </label>
+      <label id="nav-match-label">Match
+        <select id="nav-match"><option value="">Choose a match</option></select>
+      </label>
+      <label id="nav-point-label">Point
+        <select id="nav-point"><option value="">Choose a point</option></select>
+      </label>
+      <div id="nav-arms"></div>
+      <div id="nav-flights"></div>
+      <div id="nav-move">
+        <button type="button" id="flight-prev" title="Previous flight ([)">Previous flight</button>
+        <button type="button" id="flight-next" title="Next flight (])">Next flight</button>
+        <span class="hint">[ previous flight · ] next flight · arrows step a frame</span>
+      </div>
+    </div>
+    <div id="flight-filters">
+      <label>Library
+        <select id="lib-select">
+          <option value="current">Current points</option>
+          <option value="flights">Flight reviews</option>
+        </select>
+      </label>
+      <label>Panel
+        <select id="flt-panel"><option value="all">all</option></select>
+      </label>
+      <label>Arm
+        <select id="flt-arm">
+          <option value="all">all</option>
+          <option value="AA">AA</option>
+          <option value="AL">AL</option>
+          <option value="cascade">cascade</option>
+          <option value="LL">LL</option>
+        </select>
+      </label>
+      <label>Outcome
+        <select id="flt-outcome">
+          <option value="all">all</option>
+          <option value="matched">matched</option>
+          <option value="missed">missed</option>
+          <option value="extra">extra</option>
+        </select>
+      </label>
+      <label>Cause
+        <select id="flt-cause"><option value="all">all</option></select>
+      </label>
+    </div>
+    <div id="flight-readout" hidden>
+      <h2>Events</h2>
+      <div id="flight-events"></div>
+      <h2>Failed checks</h2>
+      <div id="flight-checks"></div>
+    </div>
+    <div id="serve-pose-audit">
+      <svg id="serve-side" viewBox="0 0 360 180" aria-label="serve side elevation">
+        <line class="ground" x1="0" y1="165" x2="360" y2="165" />
+        <line class="vertical" x1="180" y1="8" x2="180" y2="165" />
+        <g id="serve-side-pose"></g>
+      </svg>
+      <div id="serve-pose-caption"></div>
+    </div>
+
+    <div id="diagbanner">
+      <b>⚠ DIAGNOSTIC TRAJECTORY — NOT ACCEPTED.</b>
+      <div class="sub">The best diagnostic candidate is shown to expose the failure. Flights
+        are faded; the blocker below states which input-only legality checks held it.</div>
+    </div>
+    <div id="pose-note" role="status"></div>
+
+    <div id="review-panel">
+      <b id="review-title">Blinded 3D shot review</b>
+      <div id="review-help" class="hint">One row is one contact-to-contact or contact-to-end flight. The dimmed
+        half-second before and after is context only. Score the bright middle interval and choose
+        whether the reconstruction is good enough for downstream research. A merged interval caused
+        by a missing contact is not good enough. Do not estimate metric XYZ from the monocular view.</div>
+      <div class="choices">
+        <button data-quality="good_enough">good enough</button>
+        <button data-quality="not_good_enough">not good enough</button>
+        <button data-quality="not_judgable">not judgable</button>
+      </div>
+      <div class="hint">Optional failure reasons for “not good enough”:</div>
+      <div class="reasons">
+        <button data-reason="event_or_endpoint">event / endpoint</button>
+        <button data-reason="ball_identity_or_2d_path">2D path / identity</button>
+        <button data-reason="camera_or_court_geometry">camera / court</button>
+        <button data-reason="contact_geometry">contact geometry</button>
+        <button data-reason="bounce_xy">bounce XY</button>
+        <button data-reason="depth_or_flight_shape">depth / flight shape</button>
+        <button data-reason="physical_dynamics">physical dynamics</button>
+        <button data-reason="missing_or_extra_shot">missing / extra shot</button>
+      </div>
+      <textarea id="review-notes" placeholder="Optional boundary or failure details"></textarea>
+      <div class="review-actions">
+        <button id="review-save-next">Save + next unreviewed</button>
+        <button id="review-clear">Clear</button>
+        <button id="review-download">Download CSV</button>
+      </div>
+      <div id="review-progress" class="hint"></div>
+    </div>
+
+    <h2 id="picker-title">Shot</h2>
+    <div id="cohort-scope" class="hint"></div>
+    <select id="picker"></select>
+    <div id="supported-spans" hidden style="margin-top:10px">
+      <label for="span-picker">Supported span</label>
+      <select id="span-picker" style="width:100%"></select>
+      <div id="span-scope" class="hint"></div>
+    </div>
+    <div id="native-context" hidden style="margin-top:10px">
+      <div id="native-scope" class="hint"></div>
+      <button id="native-first">First native picture</button>
+      <button id="native-contact">First contact</button>
+      <button id="native-last">Last native picture</button>
+    </div>
+    <div style="margin-top:10px" id="meta"></div>
+
+    <h2>Trajectory colour</h2>
+    <div id="ramp"></div>
+    <div class="hint">low → high (per-point range). Faded/dashed = low-confidence or missing frames.</div>
+
+    <h2>Legend</h2>
+    <div class="legend">
+      <span><i class="sw" style="background:#ffd23f"></i>serve contact</span>
+      <span><i class="sw" style="background:#e34948"></i>rally contact</span>
+      <span><i class="sw" style="background:#8a8a8a"></i>dead/unsupported</span>
+      <span><i class="sw" style="background:#3fb27f"></i>bounce (in)</span>
+      <span><i class="sw" style="background:#e0503f"></i>bounce (out)</span>
+      <span><i class="sw" style="background:#6f63e6"></i>near player</span>
+      <span><i class="sw" style="background:#1fb98a"></i>far player</span>
+      <span><i class="sw" style="background:#ff7ac2"></i>spin axis</span>
+      <span><i class="sw" style="background:#59c3ff"></i>dashed depth-family alternate</span>
+    </div>
+
+    <h2>Contacts</h2>
+    <div id="contacts"></div>
+    <div class="hint" style="margin-top:6px">* speeds UNCALIBRATED (pre broadcast-radar cross-check).
+      The racket line is a wrist-to-racket-face display proxy derived from tracked pose, not an
+      observed racket face. Click a row to jump the scrubber.</div>
+  </div>
+</div>
+<script type="module" src="viewer.js"></script>
+</body>
+</html>

@@ -1,0 +1,736 @@
+{
+  "schema": "pipeline_implementation_registry_v1",
+  "deprecated_paths": {
+    "event_model_v2_warped_features_v1": {
+      "status": "explicit_rollback_only",
+      "artifact_sha256": "66b133757dde660909e3ccb0ba2cfb9bcab43dc2168c54b2cfb05ddcb57212a7",
+      "removal": "after one clean canonical rebenchmark cycle"
+    }
+  },
+  "statuses": {
+    "canonical": "Selected by the documented default path or required by a canonical stage.",
+    "optional": "Supported label-free mechanism behind an explicit toggle or separate command.",
+    "diagnostic": "Human-assisted, scoring, audit, or development-only implementation.",
+    "frozen_baseline": "Retained for reproducible comparison and never selected implicitly.",
+    "rollback_only": "Retained only for an explicit rollback and never selected implicitly.",
+    "archive_candidate": "No current default or supported optional lineage; preserve until removal review."
+  },
+  "modules": {
+    "active_play.py": {
+      "family": "point_scope",
+      "status": "canonical"
+    },
+    "active_play_gate.py": {
+      "family": "point_scope",
+      "status": "canonical"
+    },
+    "anchor_first_fit.py": {
+      "family": "reconstruction",
+      "status": "canonical"
+    },
+    "anthropometric_contacts.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "artifact_cache.py": {
+      "family": "infrastructure",
+      "status": "canonical"
+    },
+    "audio_evidence.py": {
+      "family": "audio",
+      "status": "canonical"
+    },
+    "audio_features.py": {
+      "family": "audio",
+      "status": "canonical"
+    },
+    "automatic_ball_track.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "ball.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "ball_anchor_extension.py": {
+      "family": "tracking",
+      "status": "optional"
+    },
+    "ball_events.py": {
+      "family": "events",
+      "status": "canonical"
+    },
+    "ball_far2x.py": {
+      "family": "tracking",
+      "status": "frozen_baseline"
+    },
+    "ball_local_refine.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "ball_local_refine_batched.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "ball_motion_tracker.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "ball_ownership.py": {
+      "family": "tracking",
+      "status": "optional"
+    },
+    "guide_sequence_association.py": {
+      "family": "tracking",
+      "status": "optional"
+    },
+    "frame_identity.py": {
+      "family": "provenance",
+      "status": "canonical"
+    },
+    "ball_neural.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "ball_neural_batched.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "ball_track_consensus.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "ball_track_detour_repair.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "ball_track_hypotheses.py": {
+      "family": "tracking",
+      "status": "optional"
+    },
+    "ball_track_local_augment.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "bounce_detect.py": {
+      "family": "events",
+      "status": "canonical"
+    },
+    "broadcast_runner.py": {
+      "family": "orchestration",
+      "status": "canonical"
+    },
+    "broadcast_source.py": {
+      "family": "source_integrity",
+      "status": "canonical"
+    },
+    "source_timebase.py": {
+      "family": "source_integrity",
+      "status": "canonical"
+    },
+    "terminal_completion.py": {
+      "family": "physics",
+      "status": "optional"
+    },
+    "cadence_normalize.py": {
+      "family": "source_integrity",
+      "status": "canonical"
+    },
+    "camera.py": {
+      "family": "camera",
+      "status": "canonical"
+    },
+    "camera_P_per_frame.py": {
+      "family": "camera",
+      "status": "optional"
+    },
+    "camera_frame_support.py": {
+      "family": "camera",
+      "status": "optional"
+    },
+    "camera_artifacts.py": {
+      "family": "camera",
+      "status": "canonical"
+    },
+    "camera_bundle.py": {
+      "family": "camera",
+      "status": "optional"
+    },
+    "camera_cal.py": {
+      "family": "camera",
+      "status": "canonical"
+    },
+    "camera_metric_refine.py": {
+      "family": "camera",
+      "status": "optional"
+    },
+    "camera_project.py": {
+      "family": "camera",
+      "status": "canonical"
+    },
+    "camera_scope.py": {
+      "family": "point_scope",
+      "status": "optional"
+    },
+    "canonical_runner.py": {
+      "family": "orchestration",
+      "status": "canonical"
+    },
+    "compose_point_validity_gate.py": {
+      "family": "gating",
+      "status": "canonical"
+    },
+    "contact_recall.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "contact_frame_refiner.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "contact_striker.py": {
+      "family": "players",
+      "status": "canonical"
+    },
+    "contacts_audio.py": {
+      "family": "events",
+      "status": "frozen_baseline"
+    },
+    "contacts_v2.py": {
+      "family": "events",
+      "status": "archive_candidate"
+    },
+    "court.py": {
+      "family": "court",
+      "status": "canonical"
+    },
+    "court_far_baseline_refinement.py": {
+      "family": "court",
+      "status": "canonical"
+    },
+    "court_geometry_gate.py": {
+      "family": "court",
+      "status": "canonical"
+    },
+    "court_geometry_point_gate.py": {
+      "family": "court",
+      "status": "canonical"
+    },
+    "court_near_baseline_refinement.py": {
+      "family": "court",
+      "status": "canonical"
+    },
+    "court_paint_refinement.py": {
+      "family": "court",
+      "status": "canonical"
+    },
+    "court_topology.py": {
+      "family": "court",
+      "status": "canonical"
+    },
+    "court_topology_frame_track.py": {
+      "family": "court",
+      "status": "optional"
+    },
+    "court_topology_runner.py": {
+      "family": "court",
+      "status": "canonical"
+    },
+    "event_crop_translation.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "event_crops.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "event_decoder.py": {
+      "family": "events",
+      "status": "frozen_baseline"
+    },
+    "event_grammar_decoder.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "event_impulse_support.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "court_anchor_camera.py": {
+      "family": "point_scope",
+      "status": "optional"
+    },
+    "live_shot_camera.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "event_inference.py": {
+      "family": "events",
+      "status": "frozen_baseline"
+    },
+    "event_model_admission.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "event_model.py": {
+      "family": "events",
+      "status": "frozen_baseline"
+    },
+    "event_model_v2.py": {
+      "family": "events",
+      "status": "rollback_only"
+    },
+    "event_model_v2_features.py": {
+      "family": "events",
+      "status": "canonical"
+    },
+    "event_model_v3.py": {
+      "family": "events",
+      "status": "canonical"
+    },
+    "event_paths.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "event_proposals.py": {
+      "family": "events",
+      "status": "frozen_baseline"
+    },
+    "event_refine.py": {
+      "family": "events",
+      "status": "frozen_baseline"
+    },
+    "event_sequence_graph.py": {
+      "family": "events",
+      "status": "canonical"
+    },
+    "event_topology.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_contact_timing.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_contact_composition.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_witnessed_interior_contacts.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "event_time_distribution.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "event_time_neighborhood.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "evaluation_scope.py": {
+      "family": "orchestration",
+      "status": "optional"
+    },
+    "event_video_model.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "flight_anchors.py": {
+      "family": "reconstruction",
+      "status": "canonical"
+    },
+    "flight_ledger.py": {
+      "family": "output",
+      "status": "canonical"
+    },
+    "frame_cadence.py": {
+      "family": "source_integrity",
+      "status": "canonical"
+    },
+    "net_cord_response.py": {
+      "family": "physics",
+      "status": "optional"
+    },
+    "paths.py": {
+      "family": "infrastructure",
+      "status": "canonical"
+    },
+    "physics_events.py": {
+      "family": "physics",
+      "status": "optional"
+    },
+    "physics_interpretation.py": {
+      "family": "physics",
+      "status": "canonical"
+    },
+    "physics_knot_solver.py": {
+      "family": "physics",
+      "status": "optional"
+    },
+    "pipeline_evidence.py": {
+      "family": "evidence",
+      "status": "canonical"
+    },
+    "play_camera_leakage.py": {
+      "family": "point_scope",
+      "status": "optional"
+    },
+    "play_phase.py": {
+      "family": "point_scope",
+      "status": "canonical"
+    },
+    "player_court_v2.py": {
+      "family": "players",
+      "status": "frozen_baseline"
+    },
+    "player_identity.py": {
+      "family": "players",
+      "status": "optional"
+    },
+    "player_motion_physical.py": {
+      "family": "pose",
+      "status": "optional"
+    },
+    "player_side_association.py": {
+      "family": "players",
+      "status": "canonical"
+    },
+    "player_tracker.py": {
+      "family": "players",
+      "status": "optional"
+    },
+    "players.py": {
+      "family": "players",
+      "status": "canonical"
+    },
+    "point_context.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "point_grammar.py": {
+      "family": "point_scope",
+      "status": "canonical"
+    },
+    "point_ledger.py": {
+      "family": "point_ledger",
+      "status": "canonical"
+    },
+    "point_end_tag.py": {
+      "family": "orchestration",
+      "status": "canonical"
+    },
+    "point_validity.py": {
+      "family": "gating",
+      "status": "canonical"
+    },
+    "pose.py": {
+      "family": "pose",
+      "status": "optional"
+    },
+    "pose_lift.py": {
+      "family": "pose",
+      "status": "optional"
+    },
+    "pose_crop_infer.py": {
+      "family": "pose",
+      "status": "optional"
+    },
+    "pose_player_crop.py": {
+      "family": "pose",
+      "status": "optional"
+    },
+    "provenance.py": {
+      "family": "infrastructure",
+      "status": "canonical"
+    },
+    "reconstruct_3d.py": {
+      "family": "reconstruction",
+      "status": "canonical"
+    },
+    "reconstruction.py": {
+      "family": "reconstruction",
+      "status": "canonical"
+    },
+    "resolution.py": {
+      "family": "source_integrity",
+      "status": "canonical"
+    },
+    "rich_ball_physics.py": {
+      "family": "physics",
+      "status": "canonical"
+    },
+    "run_contacts_pipeline.py": {
+      "family": "orchestration",
+      "status": "canonical"
+    },
+    "run_manifest.py": {
+      "family": "infrastructure",
+      "status": "canonical"
+    },
+    "score_grammar.py": {
+      "family": "point_ledger",
+      "status": "canonical"
+    },
+    "score_vlm.py": {
+      "family": "point_ledger",
+      "status": "canonical"
+    },
+    "serve_audio.py": {
+      "family": "audio",
+      "status": "canonical"
+    },
+    "serve_contact_detect.py": {
+      "family": "events",
+      "status": "frozen_baseline"
+    },
+    "segment_boundaries.py": {
+      "family": "point_ledger",
+      "status": "optional"
+    },
+    "serve_detector.py": {
+      "family": "point_ledger",
+      "status": "canonical"
+    },
+    "serve_hints.py": {
+      "family": "events",
+      "status": "canonical"
+    },
+    "serve_location_prior.py": {
+      "family": "reconstruction_witness",
+      "status": "optional"
+    },
+    "serve_speed_graphic.py": {
+      "family": "reconstruction_witness",
+      "status": "optional"
+    },
+    "shot_boundaries.py": {
+      "family": "point_ledger",
+      "status": "canonical"
+    },
+    "native_shot_continuity.py": {
+      "family": "point_scope",
+      "status": "optional"
+    },
+    "shot_segments.py": {
+      "family": "reconstruction",
+      "status": "canonical"
+    },
+    "shots_from_video.py": {
+      "family": "symbolic",
+      "status": "archive_candidate"
+    },
+    "subframe_timing.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "track_artifact.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "torso_lock.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "track_heal.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "tracking_composition.py": {
+      "family": "tracking",
+      "status": "canonical"
+    },
+    "tracking_point_gate.py": {
+      "family": "gating",
+      "status": "canonical"
+    },
+    "trajectory_contract.py": {
+      "family": "gating",
+      "status": "canonical"
+    },
+    "view_classifier.py": {
+      "family": "point_ledger",
+      "status": "canonical"
+    },
+    "vlm_policy.py": {
+      "family": "infrastructure",
+      "status": "canonical"
+    },
+    "s6_event_operating_point.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_ball_jump_rejection.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_ball_streak_centre.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_labeled_stage.py": {
+      "family": "reconstruction",
+      "status": "diagnostic"
+    },
+    "s6_preparation_policy.py": {
+      "family": "reconstruction",
+      "status": "diagnostic"
+    },
+    "s6_player_camera.py": {
+      "family": "reconstruction",
+      "status": "diagnostic"
+    },
+    "s6_refinement_input_context.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_shared_refinement.py": {
+      "family": "reconstruction",
+      "status": "diagnostic"
+    },
+    "s6_automatic_observations.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_producer_source_recovery.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_contact_prefix_scope.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_contact_prefix_runtime.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_first_flight_scope.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_first_contact_role.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_owner_gate_loosening.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_contact_components.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_terminal_context.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_terminal_net_membership.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_input_origin.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_broadcast_backend.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "event_ground_evidence.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "event_net_evidence.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "event_wing_streak.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "event_native_pictures.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "service_attempt_scope.py": {
+      "family": "point_ledger",
+      "status": "optional"
+    },
+    "window_camera_inference.py": {
+      "family": "court",
+      "status": "optional"
+    },
+    "attempt_observation_scope.py": {
+      "family": "point_ledger",
+      "status": "optional"
+    },
+    "event_contact_witness.py": {
+      "family": "events",
+      "status": "optional"
+    },
+    "s6_independent_event_proposals.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_optional_contacts.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_optional_bounces.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_optional_bounce_scope.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_optional_event_union.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "native_actor_continuity.py": {
+      "family": "point_scope",
+      "status": "optional"
+    },
+    "s6_rally_origin_cue.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_component_scope.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_component_orchestration.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "s6_attempt_execution.py": {
+      "family": "reconstruction",
+      "status": "optional"
+    },
+    "event_cascade.py": {
+      "family": "events",
+      "status": "canonical"
+    },
+    "event_cascade_models.py": {
+      "family": "events",
+      "status": "canonical"
+    },
+    "event_cascade_rebind.py": {
+      "family": "events",
+      "status": "canonical"
+    },
+    "event_cascade_runner.py": {
+      "family": "events",
+      "status": "canonical"
+    },
+    "product_runner.py": {
+      "family": "orchestration",
+      "status": "canonical"
+    },
+    "event_cascade_propose.py": {
+      "family": "events",
+      "status": "optional"
+    }
+  }
+}
