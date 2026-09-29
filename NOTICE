@@ -28,9 +28,23 @@ PyTorch, torchvision (incl. Kinetics-400 / ImageNet initialisations) ...........
     (pretrained weights: see their model terms)
 NumPy, SciPy, pandas, polars, scikit-learn, OpenCV, timm, einops, matplotlib,
 Pillow, tqdm, easydict ........................................ BSD / Apache-2.0 / MIT family
+DINOv3 ViT-S/16 backbone (Meta; via timm), S1 view head features ....... DINOv3 License
+    Built with DINOv3. The released view head is trained on DINOv3 features and is
+    distributed with a copy of the DINOv3 License.
 vLLM (optional local scoreboard / event VLM serving) ............................ Apache-2.0
 Qwen model weights (optional local VLM) ................................ see the model card
 FFmpeg / ffprobe (decoding and timestamp audit) ................ LGPL/GPL depending on build
+
+-------------------------------------------------------------------------------
+Model weights (GitHub Release weights-v1; not in this source tree)
+-------------------------------------------------------------------------------
+
+The authors' trained weights are released under Apache-2.0, subject to upstream terms: the ball
+crop fine-tunes derive from the MIT-licensed WASB-SBDT tennis weights (Copyright (c) 2023 NTT
+Communications Corporation), and the event model was initialised from torchvision's Kinetics-400
+and ImageNet weights, and the view head is built with DINOv3 (DINOv3 License, copy in the
+release). The serve-location prior is fitted to the public Hawk-Eye CourtVision trajectory data,
+which is not redistributed. See MODEL_CARD.md and THIRD_PARTY_NOTICES.md in the release.
 
 -------------------------------------------------------------------------------
 Data

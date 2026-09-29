@@ -89,8 +89,24 @@ pip install -e ".[cv,dev]"   # dependencies only; install the torch build for yo
 export TENNIS_DATA_ROOT=/path/to/tennis-data   # weights and outputs; run commands from the repo root
 ```
 
-Model weights are not in this repository; [docs/MODELS.md](docs/MODELS.md) lists each one, where
-the code looks for it, and how to obtain it.
+## Model weights
+
+The authors' trained weights (event model, ball crop fine-tunes, Stage-1 view and serve heads,
+serve-location prior; 233 MB) are assets of the GitHub Release
+[`weights-v1`](https://github.com/maxsegan/openhawk/releases/tag/weights-v1), with a model card.
+Install them with checksum verification:
+
+```bash
+curl -fsSLO https://github.com/maxsegan/openhawk/releases/download/weights-v1/install_weights.sh
+bash install_weights.sh      # needs TENNIS_DATA_ROOT
+```
+
+**Built with DINOv3:** the Stage-1 view head is trained on Meta's DINOv3 features and ships with
+the DINOv3 License in the release.
+
+Third-party weights (WASB-SBDT, Ultralytics YOLO, torchvision, DINOv3, Qwen) come from their own
+distributors under their own licences. [docs/MODELS.md](docs/MODELS.md) lists every weight, its
+SHA-256, where the code looks for it and its licence.
 
 ## Run on a video
 
@@ -171,7 +187,7 @@ Read these with the following in mind:
 
 ## Not in this repository
 
-Videos, frames and any broadcast images; model weights (see docs/MODELS.md); human and VLM
+Videos, frames and any broadcast images; model weights (release assets, see docs/MODELS.md); human and VLM
 labels; the evaluation-panel harness and panel data; internal experiment logs. Candidates for
 release on request are listed in docs/MODELS.md and docs/EVALUATION.md.
 
