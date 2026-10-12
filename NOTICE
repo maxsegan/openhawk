@@ -1,0 +1,63 @@
+OpenHawk
+Copyright 2026 Max Segan
+
+Source code in this repository is licensed under the PolyForm Noncommercial License 1.0.0
+(see LICENSE). Documentation, images, sample clips, released data and the authors' model weights
+are licensed under Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0;
+see LICENSE-DOCS). Third-party components keep their own licences, listed below.
+
+-------------------------------------------------------------------------------
+Third-party code included in this repository
+-------------------------------------------------------------------------------
+
+cv/viz/portal_3d_src/vendor/three.module.js
+cv/viz/portal_3d_src/vendor/OrbitControls.js
+    three.js r160, Copyright (c) 2010-2023 three.js authors.
+    MIT License; full text in cv/viz/portal_3d_src/vendor/THREE_LICENSE.txt.
+
+No other third-party source code is vendored. cv/pipeline/event_cascade_frozen/ holds frozen
+copies of the authors' own modules.
+
+-------------------------------------------------------------------------------
+Runtime dependencies (installed separately; not distributed here)
+-------------------------------------------------------------------------------
+
+WASB-SBDT (NTT Communications), S4 ball detector source and tennis weights ...... MIT
+TrackNetV2 tennis weights (distributed with WASB-SBDT) ......................... see WASB-SBDT
+Ultralytics (ultralytics package; YOLOv8m and YOLO26m-pose weights), S3 players . AGPL-3.0
+    (commercial licence available from Ultralytics). The Ultralytics package and
+    weights are used under their own terms; they are not part of this repository.
+PyTorch, torchvision (incl. Kinetics-400 / ImageNet initialisations) ........... BSD-3-Clause
+    (pretrained weights: see their model terms)
+NumPy, SciPy, pandas, polars, scikit-learn, OpenCV, timm, einops, matplotlib,
+Pillow, tqdm, easydict ........................................ BSD / Apache-2.0 / MIT family
+DINOv3 ViT-S/16 backbone (Meta; via timm), S1 view head features ....... DINOv3 License
+    Built with DINOv3. The released view head is trained on DINOv3 features and is
+    distributed with a copy of the DINOv3 License.
+vLLM (optional local scoreboard / event VLM serving) ............................ Apache-2.0
+Qwen model weights (optional local VLM) ................................ see the model card
+FFmpeg / ffprobe (decoding and timestamp audit) ................ LGPL/GPL depending on build
+
+-------------------------------------------------------------------------------
+Model weights (GitHub Release weights-v1; not in this source tree)
+-------------------------------------------------------------------------------
+
+The authors' trained weights are released under CC BY-NC 4.0, subject to upstream terms: the ball
+crop fine-tunes derive from the MIT-licensed WASB-SBDT tennis weights (Copyright (c) 2023 NTT
+Communications Corporation), and the event model was initialised from torchvision's Kinetics-400
+and ImageNet weights, and the view head is built with DINOv3 (DINOv3 License, copy in the
+release). The serve-location prior is fitted to the public Hawk-Eye CourtVision trajectory data,
+which is not redistributed. See MODEL_CARD.md and THIRD_PARTY_NOTICES.md in the release.
+
+-------------------------------------------------------------------------------
+Data
+-------------------------------------------------------------------------------
+
+physics/bounce_law_hawkeye_holdout.json and physics/bounce_reference.py contain coefficients
+fitted to the public Hawk-Eye CourtVision trajectory data (Roland Garros 2019-2021, Australian
+Open 2020-2021). That data is not redistributed here. Player heights in
+cv/pipeline/player_biometrics.json are public ATP/WTA profile values listed with their URLs.
+The images, GIF and clips in docs/samples/ are automatic outputs of this tool (CC BY-NC 4.0 for
+the authors' renders and overlays). Broadcast frames and clips shown in reduced form in them are
+the property of their respective rights holders and are included solely to illustrate the
+research output.

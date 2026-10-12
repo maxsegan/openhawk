@@ -1,0 +1,146 @@
+{
+  "schema": "player_biometrics_v1",
+  "measured_at": "2026-08-02",
+  "players": {
+    "alex_de_minaur": {
+      "display_name": "Alex de Minaur",
+      "height_m": 1.83,
+      "source": "https://www.atptour.com/en/players/alex-de%20mi%C3%B1aur/dh58/overview"
+    },
+    "alexander_zverev": {
+      "display_name": "Alexander Zverev",
+      "height_m": 1.98,
+      "source": "https://www.atptour.com/en/players/alexanderzverev/z355/overview"
+    },
+    "alexander_bublik": {
+      "display_name": "Alexander Bublik",
+      "height_m": 1.96,
+      "source": "https://www.atptour.com/en/players/alexander-bublik/bk92/overview"
+    },
+    "aryna_sabalenka": {
+      "display_name": "Aryna Sabalenka",
+      "height_m": 1.82,
+      "source": "https://www.wtatennis.com/players/320760/aryna-sabalenka"
+    },
+    "ashleigh_barty": {
+      "display_name": "Ashleigh Barty",
+      "height_m": 1.66,
+      "source": "https://www.wtatennis.com/players/318033/ashleigh-barty"
+    },
+    "carlos_alcaraz": {
+      "display_name": "Carlos Alcaraz",
+      "height_m": 1.83,
+      "source": "https://www.atptour.com/en/players/carlos-alcaraz/a0e2/overview"
+    },
+    "coco_gauff": {
+      "display_name": "Coco Gauff",
+      "height_m": 1.75,
+      "source": "https://www.wtatennis.com/players/328560/cocogauff"
+    },
+    "danielle_collins": {
+      "display_name": "Danielle Collins",
+      "height_m": 1.78,
+      "source": "https://www.wtatennis.com/players/316925/danielle-collins"
+    },
+    "dominic_thiem": {
+      "display_name": "Dominic Thiem",
+      "height_m": 1.85,
+      "source": "https://www.atptour.com/en/players/-/TB69/overview"
+    },
+    "elina_svitolina": {
+      "display_name": "Elina Svitolina",
+      "height_m": 1.74,
+      "source": "https://www.wtatennis.com/players/316738/elina-svitolina"
+    },
+    "emma_raducanu": {
+      "display_name": "Emma Raducanu",
+      "height_m": 1.75,
+      "source": "https://www.wtatennis.com/players/328366/emma-raducanu"
+    },
+    "iga_swiatek": {
+      "display_name": "Iga Swiatek",
+      "height_m": 1.76,
+      "source": "https://www.wtatennis.com/players/326408/name/stats"
+    },
+    "jannik_sinner": {
+      "display_name": "Jannik Sinner",
+      "height_m": 1.91,
+      "source": "https://www.atptour.com/players/jannik-sinner/s0ag/overview"
+    },
+    "jenson_brooksby": {
+      "display_name": "Jenson Brooksby",
+      "height_m": 1.93,
+      "source": "https://www.atptour.com/en/players/jenson-brooksby/b0cd/overview"
+    },
+    "lois_boisson": {
+      "display_name": "Lois Boisson",
+      "height_m": 1.75,
+      "source": "https://www.wtatennis.com/players/328884/lois-boisson/"
+    },
+    "mirra_andreeva": {
+      "display_name": "Mirra Andreeva",
+      "height_m": 1.75,
+      "source": "https://www.wtatennis.com/players/331809/mirra-andreeva/stats"
+    },
+    "elena_rybakina": {
+      "display_name": "Elena Rybakina",
+      "height_m": 1.84,
+      "source": "https://www.wtatennis.com/players/324166/elena-rybakina"
+    },
+    "naomi_osaka": {
+      "display_name": "Naomi Osaka",
+      "height_m": 1.8,
+      "source": "https://www.wtatennis.com/players/319998/naomi-osaka"
+    },
+    "novak_djokovic": {
+      "display_name": "Novak Djokovic",
+      "height_m": 1.88,
+      "source": "https://www.atptour.com/en/players/novak-djokovic/d643/overview"
+    },
+    "petra_kvitova": {
+      "display_name": "Petra Kvitova",
+      "height_m": 1.82,
+      "source": "https://www.wtatennis.com/players/314206/petra-kvitova"
+    },
+    "qinwen_zheng": {
+      "display_name": "Qinwen Zheng",
+      "height_m": 1.78,
+      "source": "https://www.wtatennis.com/players/328120/-/stats"
+    },
+    "rafael_nadal": {
+      "display_name": "Rafael Nadal",
+      "height_m": 1.85,
+      "source": "https://www.atptour.com/en/players/rafael-nadal/n409/overview"
+    },
+    "taylor_fritz": {
+      "display_name": "Taylor Fritz",
+      "height_m": 1.96,
+      "source": "https://www.atptour.com/en/players/fritz-taylor/fb98/overview"
+    }
+  },
+  "matches": {
+    "ao2019f_w_osaka_kvitova": ["naomi_osaka", "petra_kvitova"],
+    "ao2022f_w_barty_collins": ["ashleigh_barty", "danielle_collins"],
+    "ao2023f_w_sabalenka_rybakina": ["aryna_sabalenka", "elena_rybakina"],
+    "ao2026r128_m_bublik_brooksby": ["alexander_bublik", "jenson_brooksby"],
+    "atpf2023sf_m_djokovic_alcaraz": ["novak_djokovic", "carlos_alcaraz"],
+    "atp_2024_540_r16_217_taylor_fritz_alexander_zverev": ["taylor_fritz", "alexander_zverev"],
+    "barcelona2019sf_m_thiem_nadal": ["dominic_thiem", "rafael_nadal"],
+    "rg2025qf_w_boisson_andreeva": ["lois_boisson", "mirra_andreeva"],
+    "rome2026f_w_svitolina_gauff": ["elina_svitolina", "coco_gauff"],
+    "wtaf2024f_w_gauff_zheng": ["coco_gauff", "qinwen_zheng"],
+    "rotterdam2025f_m_alcaraz_de_minaur": ["carlos_alcaraz", "alex_de_minaur"],
+    "uso2025f_m_sinner_alcaraz": ["jannik_sinner", "carlos_alcaraz"],
+    "wim2025f_m_sinner_alcaraz": ["jannik_sinner", "carlos_alcaraz"],
+    "wim2025r32_w_sabalenka_raducanu": ["aryna_sabalenka", "emma_raducanu"],
+    "wta_2024_520_r64_165_iga_swiatek_naomi_osaka": ["iga_swiatek", "naomi_osaka"],
+    "wuhan2024f_w_sabalenka_zheng": ["aryna_sabalenka", "qinwen_zheng"],
+    "wta_2019_580_f_226_naomi_osaka_petra_kvitova": ["naomi_osaka", "petra_kvitova"],
+    "wta_2023_580_f_226_aryna_sabalenka_elena_rybakina": ["aryna_sabalenka", "elena_rybakina"],
+    "atp_2023_540_f_226_carlos_alcaraz_novak_djokovic": ["carlos_alcaraz", "novak_djokovic"],
+    "atp_2019_0425_sf_299_dominic_thiem_rafael_nadal": ["dominic_thiem", "rafael_nadal"],
+    "wta_2025_520_qf_223_lois_boisson_mirra_andreeva": ["lois_boisson", "mirra_andreeva"],
+    "atp_2025_560_f_226_carlos_alcaraz_jannik_sinner": ["carlos_alcaraz", "jannik_sinner"],
+    "wta_2024_1075_f_300_aryna_sabalenka_qinwen_zheng": ["aryna_sabalenka", "qinwen_zheng"]
+  }
+}

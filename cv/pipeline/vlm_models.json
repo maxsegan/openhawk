@@ -1,0 +1,109 @@
+{
+  "schema": "local_vlm_frontier_v1",
+  "hardware": {
+    "gpu_count": 4,
+    "gpu_memory_gib_each": 96,
+    "gpu_model": "NVIDIA RTX PRO 6000 Blackwell"
+  },
+  "policy": "Track explicitly integrated local models and their deployment status. Evaluate current suitable replacements and update this registry without a separate approval requirement; do not silently change existing run identities.",
+  "models": [
+    {
+      "id": "MiniMaxAI/MiniMax-M3",
+      "architecture": "multimodal_moe",
+      "parameters_billions": 428,
+      "active_parameters_billions": 23,
+      "license": "minimax-community-license",
+      "source": "https://huggingface.co/MiniMaxAI/MiniMax-M3",
+      "deployment": {
+        "runtime": "vllm_nightly_cuda13_container",
+        "precision": "nvfp4",
+        "weights": "nvidia/MiniMax-M3-NVFP4",
+        "weights_source": "https://huggingface.co/nvidia/MiniMax-M3-NVFP4",
+        "local_subdir": "models/vlm_frontier/MiniMax-M3-NVFP4",
+        "tensor_parallel": 4,
+        "status": "runtime_invalid_sm120_tp4_weight_only_marlin"
+      }
+    },
+    {
+      "id": "Qwen/Qwen3.5-397B-A17B",
+      "architecture": "multimodal_moe",
+      "parameters_billions": 397,
+      "active_parameters_billions": 17,
+      "license": "apache-2.0",
+      "source": "https://huggingface.co/Qwen/Qwen3.5-397B-A17B",
+      "deployment": {
+        "runtime": "vllm_or_sglang",
+        "precision": "gptq_int4",
+        "weights": "Qwen/Qwen3.5-397B-A17B-GPTQ-Int4",
+        "weights_source": "https://huggingface.co/Qwen/Qwen3.5-397B-A17B-GPTQ-Int4",
+        "local_subdir": "models/vlm_frontier/Qwen3.5-397B-A17B-GPTQ-Int4",
+        "tensor_parallel": 4,
+        "status": "served_and_benchmarked"
+      }
+    },
+    {
+      "id": "Qwen/Qwen3.6-27B",
+      "architecture": "multimodal_dense",
+      "parameters_billions": 27,
+      "active_parameters_billions": 27,
+      "license": "apache-2.0",
+      "source": "https://huggingface.co/Qwen/Qwen3.6-27B",
+      "deployment": {
+        "runtime": "sglang_cuda13_sm120_patched",
+        "precision": "bfloat16",
+        "local_subdir": "models/vlm_frontier/Qwen3.6-27B",
+        "tensor_parallel": 1,
+        "status": "served_and_benchmarked"
+      }
+    },
+    {
+      "id": "Qwen/Qwen3.6-35B-A3B",
+      "architecture": "multimodal_moe",
+      "parameters_billions": 35,
+      "active_parameters_billions": 3,
+      "license": "apache-2.0",
+      "source": "https://huggingface.co/Qwen/Qwen3.6-35B-A3B",
+      "deployment": {
+        "runtime": "vllm",
+        "precision": "bfloat16",
+        "local_subdir": "models/vlm_frontier/Qwen3.6-35B-A3B",
+        "tensor_parallel": 1,
+        "status": "served_and_benchmarked"
+      }
+    },
+    {
+      "id": "Qwen/Qwen3.8-27B-FP8",
+      "architecture": "multimodal_dense",
+      "parameters_billions": 27,
+      "active_parameters_billions": 27,
+      "license": "apache-2.0",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B-FP8",
+      "deployment": {
+        "runtime": "vllm_nightly_cuda13",
+        "precision": "fp8",
+        "weights": "Qwen/Qwen3.8-27B-FP8",
+        "weights_source": "https://huggingface.co/Qwen/Qwen3.8-27B-FP8",
+        "local_subdir": "models/vlm_frontier/Qwen3.8-27B-FP8",
+        "tensor_parallel": 1,
+        "status": "served_and_benchmarked"
+      }
+    },
+    {
+      "id": "thinkingmachines/Inkling-Small",
+      "architecture": "multimodal_moe",
+      "parameters_billions": 276,
+      "active_parameters_billions": 12,
+      "license": "apache-2.0",
+      "source": "https://huggingface.co/thinkingmachines/Inkling-Small",
+      "deployment": {
+        "runtime": "sglang_cuda13_sm120_patched",
+        "precision": "nvfp4",
+        "weights": "thinkingmachines/Inkling-Small-NVFP4",
+        "weights_source": "https://huggingface.co/thinkingmachines/Inkling-Small-NVFP4",
+        "local_subdir": "models/vlm_frontier/Inkling-Small-NVFP4",
+        "tensor_parallel": 4,
+        "status": "served_and_benchmarked"
+      }
+    }
+  ]
+}
